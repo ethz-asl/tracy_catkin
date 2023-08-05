@@ -5,7 +5,7 @@ RUN apt-get update && \
     apt-get install -q -y --no-install-recommends \
         build-essential cmake \
         ca-certificates git \
-        libdbus-1-dev libtbb-dev libegl-dev libfreetype-dev libglfw3-dev && \
+        libdbus-1-dev libtbb-dev libegl-dev libfreetype-dev libglfw3-dev libgtk-3-dev && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR opt
@@ -17,11 +17,11 @@ ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/lib"
 
 RUN git clone --depth=1 https://github.com/wolfpld/tracy.git -b v0.9.1 && \
     cd tracy/profiler/build/unix && \
-    export TRACY_NO_FILESELECTOR=1 && \
+    export TRACY_GTK_FILESELECTOR=1 && \
     make -j`nproc` LEGACY=1
+RUN ln -s /opt/tracy/profiler/build/unix/Tracy-release /usr/local/bin/tracy_profiler
 
 RUN adduser tracy
 USER tracy
 WORKDIR /home/tracy
-RUN ln -s /opt/tracy/profiler/build/unix/Tracy-release profiler
-ENTRYPOINT ./profiler
+ENTRYPOINT tracy_profiler
