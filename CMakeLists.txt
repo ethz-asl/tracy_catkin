@@ -10,15 +10,15 @@ include(cmake/tracy_catkin-extras.cmake)
 # Create the include directory to install the headers, if needed
 file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/include)
 
-# Download and build
+# Download and build Tracy sources
 include(ExternalProject)
 ExternalProject_Add(
-    tracy_src
+    ${PROJECT_NAME}_src
     GIT_REPOSITORY https://github.com/wolfpld/tracy.git
     GIT_TAG v0.9.1
     GIT_SHALLOW TRUE
     UPDATE_COMMAND ""
-    CONFIGURE_COMMAND cd ../tracy_src &&
+    CONFIGURE_COMMAND cd ../${PROJECT_NAME}_src &&
     cmake .
     -DCMAKE_INSTALL_PREFIX:PATH=${CATKIN_DEVEL_PREFIX}
     -DBUILD_SHARED_LIBS:BOOL=true
@@ -46,9 +46,25 @@ ExternalProject_Add(
     -DTRACY_FIBERS:BOOL=${TRACY_FIBERS}
     -DTRACY_NO_CRASH_HANDLER:BOOL=${TRACY_NO_CRASH_HANDLER}
     -DTRACY_TIMER_FALLBACK:BOOL=${TRACY_TIMER_FALLBACK}
-    BUILD_COMMAND cd ../tracy_src && make -j 8
-    INSTALL_COMMAND cd ../tracy_src && make install -j 8
+    BUILD_COMMAND cd ../${PROJECT_NAME}_src && make -j 8
+    INSTALL_COMMAND cd ../${PROJECT_NAME}_src && make install -j 8
 )
+
+# Install Tracy's headers
+install(DIRECTORY ${CATKIN_DEVEL_PREFIX}/include/common
+    DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+install(DIRECTORY ${CATKIN_DEVEL_PREFIX}/include/client
+    DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+install(DIRECTORY ${CATKIN_DEVEL_PREFIX}/include/tracy
+    DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
+# Install Tracy's library
+install(DIRECTORY ${CATKIN_DEVEL_PREFIX}/lib/
+    DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    FILES_MATCHING PATTERN "libTracyClient*")
 
 # Make Tracy available to other catkin packages
 cs_export(INCLUDE_DIRS ${CATKIN_DEVEL_PREFIX}/include
