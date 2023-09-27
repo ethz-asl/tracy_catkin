@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.0.2)
 project(tracy_catkin)
 
 find_package(catkin_simple REQUIRED)
