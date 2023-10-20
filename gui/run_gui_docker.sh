@@ -13,7 +13,7 @@ if docker info | grep "Runtimes.*nvidia.*" &>/dev/null; then
     -v "${HOME}":/home/tracy:rw \
     tracy-gui "$@"
 else
-  docker run --rm -it --net=host \
+  docker run --rm -it --net=host --device /dev/dri \
     -e DISPLAY="${DISPLAY}" \
     -e QT_X11_NO_MITSHM=1 \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \

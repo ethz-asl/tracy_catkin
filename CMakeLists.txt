@@ -15,7 +15,7 @@ include(ExternalProject)
 ExternalProject_Add(
     ${PROJECT_NAME}_src
     GIT_REPOSITORY https://github.com/wolfpld/tracy.git
-    GIT_TAG v0.9.1
+    GIT_TAG v0.10
     GIT_SHALLOW TRUE
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND cd ../${PROJECT_NAME}_src &&
