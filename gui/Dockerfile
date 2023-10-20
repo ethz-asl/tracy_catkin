@@ -1,3 +1,5 @@
+ARG TRACY_VERSION
+
 FROM ubuntu:20.04
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -15,7 +17,8 @@ RUN git clone --depth=1 https://github.com/capstone-engine/capstone.git -b 4.0.2
     cmake .. && make install
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/lib"
 
-RUN git clone --depth=1 https://github.com/wolfpld/tracy.git -b v0.9.1 && \
+ARG TRACY_VERSION
+RUN git clone --depth=1 https://github.com/wolfpld/tracy.git -b $TRACY_VERSION && \
     cd tracy/profiler/build/unix && \
     export TRACY_GTK_FILESELECTOR=1 && \
     make -j`nproc` LEGACY=1

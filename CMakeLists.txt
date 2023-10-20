@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(tracy_catkin)
 
+# Read what Tracy version should be built from the TRACY_VERSION file
+file(STRINGS "TRACY_VERSION" TRACY_VERSION)
+
+# Tell CMAKE to rebuild when the TRACY_VERSION variable changes
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS TRACY_VERSION)
+
+# Initialize catkin
 find_package(catkin_simple REQUIRED)
 catkin_simple()
 
@@ -15,9 +22,9 @@ include(ExternalProject)
 ExternalProject_Add(
     ${PROJECT_NAME}_src
     GIT_REPOSITORY https://github.com/wolfpld/tracy.git
-    GIT_TAG v0.10
+    GIT_TAG ${TRACY_VERSION}
     GIT_SHALLOW TRUE
-    UPDATE_COMMAND ""
+    GIT_REMOTE_UPDATE_STRATEGY CHECKOUT
     CONFIGURE_COMMAND cd ../${PROJECT_NAME}_src &&
     cmake .
     -DCMAKE_INSTALL_PREFIX:PATH=${CATKIN_DEVEL_PREFIX}
