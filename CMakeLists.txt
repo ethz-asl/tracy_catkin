@@ -7,10 +7,6 @@ file(STRINGS "TRACY_VERSION" TRACY_VERSION)
 # Tell CMAKE to rebuild when the TRACY_VERSION variable changes
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS TRACY_VERSION)
 
-# Initialize catkin
-find_package(catkin_simple REQUIRED)
-catkin_simple()
-
 # Include compiler options and definitions
 include(cmake/tracy_catkin-extras.cmake)
 
@@ -57,6 +53,13 @@ ExternalProject_Add(
     INSTALL_COMMAND cd ../${PROJECT_NAME}_src && make install -j 8
 )
 
+# Setup catkin package
+find_package(catkin REQUIRED)
+catkin_package(
+    INCLUDE_DIRS ${CATKIN_DEVEL_PREFIX}/include
+    LIBRARIES TracyClient
+    CFG_EXTRAS tracy_catkin-extras.cmake)
+
 # Install Tracy's headers
 install(DIRECTORY ${CATKIN_DEVEL_PREFIX}/include/common
     DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
@@ -73,7 +76,3 @@ install(DIRECTORY ${CATKIN_DEVEL_PREFIX}/lib/
     DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     FILES_MATCHING PATTERN "libTracyClient*")
 
-# Make Tracy available to other catkin packages
-cs_export(INCLUDE_DIRS ${CATKIN_DEVEL_PREFIX}/include
-    LIBRARIES TracyClient
-    CFG_EXTRAS tracy_catkin-extras.cmake)
